@@ -20,18 +20,18 @@ export class ValidateLoginComponent implements OnInit {
     this.verifyLoggedInUser();
   }
 
-  processTokenURLParameter(params:any) {
+  processTokenURLParameter(params: any) {
     const token = params['token'];
-      if (!token) return
-      this.userService.getTokenInfo(token).subscribe({
-        next: (res) => {
-          this.userService.loggedInUser = res;
-          this.verifyLoggedInUser();
-        },
-        error: (err) => {
-          this.verificationStatus = err.error.message;
-        }
-      });
+    if (!token) return
+    this.userService.getTokenInfo(token).subscribe({
+      next: (res) => {
+        this.userService.loggedInUser = res;
+        this.verifyLoggedInUser();
+      },
+      error: (err) => {
+        this.verificationStatus = err.error.message;
+      }
+    });
   }
 
   verifyLoggedInUser() {
