@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IUser } from '../models/user';
 import { UserService } from '../services/user.service';
 
@@ -19,26 +20,42 @@ export class LoginComponent implements OnInit {
   get email() { return this.loginForm.get('email') }
   get password() { return this.loginForm.get('password') }
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private router: Router, private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.activatedRoute.queryParams.subscribe(params => {
+      const token = params['token'];
+      if (!token) return
+      else this.router.navigateByUrl('/validateUser?token=' + token);
+    });
+    this.verifyLoggedInUser();
+    this.loginForm.valueChanges.subscribe(res => {
+      this.errorMessage = undefined;
+    });
+  }
+
+  verifyLoggedInUser() {
+    this.userService.verifyLogin().subscribe(
+      res => {
+        if (res === 'Valid Token') {
+          this.router.navigateByUrl('/validateUser');
+        }
+      }
+    );
   }
 
   submitForm() {
     if (this.loginForm.valid && this.loginForm.controls.email.value && this.loginForm.controls.password.value) {
-      console.log('loginForm = ', this.loginForm.value);
-      this.userService.login(this.loginForm.controls.email.value, this.loginForm.controls.password.value).subscribe((user: IUser) => {
-        console.log('user = ', user);
-      },
-        err => {
+      this.userService.login(this.loginForm.controls.email.value, this.loginForm.controls.password.value).subscribe({
+        next: (user: IUser[]) => {
+          this.userService.loggedInUser = user[0];
+          this.router.navigateByUrl('/validateUser');
+        },
+        error: (err) => {
           this.errorMessage = err.error;
-        });
+        }
+      });
     }
-  }
-
-  public myError = (controlName: string, errorName: string): boolean => {
-    const control = this.loginForm.get(controlName);
-    return control ? control.hasError(errorName) : false;
   }
 
 }
