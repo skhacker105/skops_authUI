@@ -10,6 +10,7 @@ import { UserService } from '../services/user.service';
 })
 export class LoginComponent implements OnInit {
 
+  errorMessage: string | undefined;
   loginForm = new FormGroup({
     email: new FormControl<string>('', [Validators.required, Validators.email]),
     password: new FormControl<string>('', [Validators.required])
@@ -28,7 +29,10 @@ export class LoginComponent implements OnInit {
       console.log('loginForm = ', this.loginForm.value);
       this.userService.login(this.loginForm.controls.email.value, this.loginForm.controls.password.value).subscribe((user: IUser) => {
         console.log('user = ', user);
-      });
+      },
+        err => {
+          this.errorMessage = err.error;
+        });
     }
   }
 

@@ -22,7 +22,9 @@
             Password is <strong>required</strong>
         </mat-error>
     </mat-form-field>
-    <br><br>
+    <br>
+    <br>
+    <mat-error *ngIf="errorMessage">{{errorMessage}}</mat-error>
 
     <!-- Login Actions -->
     <mat-card class="action-container">
