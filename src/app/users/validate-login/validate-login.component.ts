@@ -15,7 +15,13 @@ export class ValidateLoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe(params => {
-      const token = params['token'];
+      this.processTokenURLParameter(params);
+    });
+    this.verifyLoggedInUser();
+  }
+
+  processTokenURLParameter(params:any) {
+    const token = params['token'];
       if (!token) return
       this.userService.getTokenInfo(token).subscribe({
         next: (res) => {
@@ -26,8 +32,6 @@ export class ValidateLoginComponent implements OnInit {
           this.verificationStatus = err.error.message;
         }
       });
-    });
-    this.verifyLoggedInUser();
   }
 
   verifyLoggedInUser() {
@@ -38,6 +42,7 @@ export class ValidateLoginComponent implements OnInit {
     this.userService.verifyLogin().subscribe({
       next: (res: any) => {
         this.verificationStatus = res.message;
+        this.userService.returnWithToken();
       },
       error: err => {
         this.verificationStatus = err.error.message;

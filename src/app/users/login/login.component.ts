@@ -24,14 +24,26 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe(params => {
-      const token = params['token'];
-      if (!token) return
-      else this.router.navigateByUrl('/validateUser?token=' + token);
+      this.processReturnURLParameter(params);
+      this.processTokenURLParameter(params);
     });
     this.verifyLoggedInUser();
     this.loginForm.valueChanges.subscribe(res => {
       this.errorMessage = undefined;
     });
+  }
+
+  processReturnURLParameter(params: any) {
+    const returnURL = params['returnURL'];
+    console.log('returnURL = ', returnURL);
+    if (!returnURL) return
+    else this.userService.returnURL = returnURL;
+  }
+
+  processTokenURLParameter(params: any) {
+    const token = params['token'];
+    if (!token) return
+    else this.router.navigateByUrl('/validateUser?token=' + token);
   }
 
   verifyLoggedInUser() {

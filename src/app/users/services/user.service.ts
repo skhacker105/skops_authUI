@@ -10,6 +10,7 @@ import { environment } from 'src/environments/environment';
 export class UserService {
 
   loggedInUser: IUser | undefined;
+  returnURL: string | undefined;
 
   constructor(private http: HttpClient) { }
 
@@ -30,5 +31,12 @@ export class UserService {
   getTokenInfo(token: string): Observable<IUser> {
     const url = environment.uersapi + '/info?token=' + token;
     return this.http.get<IUser>(url);
+  }
+
+  returnWithToken() {
+    console.log('this.returnURL = ', this.returnURL);
+    if (this.returnURL) {
+      window.location.href = this.returnURL;
+    }
   }
 }
