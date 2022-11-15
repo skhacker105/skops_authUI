@@ -36,7 +36,7 @@ export class UserService {
   returnWithToken() {
     console.log('this.returnURL = ', this.returnURL);
     if (this.returnURL) {
-      window.location.href = this.returnURL;
+      window.location.href = this.returnURL + (this.returnURL.indexOf('?') >= 0 ? '' : '?') + '&token=' + this.loggedInUser?.token;
     }
   }
 }
