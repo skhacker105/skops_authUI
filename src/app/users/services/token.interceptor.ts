@@ -17,7 +17,6 @@ export class TokenInterceptor implements HttpInterceptor {
     const token = this.userService.loggedInUser ? this.userService.loggedInUser.token : null;
 
     if (token) {
-      // If we have a token, we set it to the header
       request = request.clone({
         setHeaders: { 'x-access-token': `${token}` }
       });
